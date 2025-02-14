@@ -1,20 +1,23 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Route } from "../routes/posts.$postId";
+import matter from "front-matter";
+import source from "../content/dockerizando-um-projeto-node-js/index.md";
+import { useRemark } from "react-remark";
 
 export const Post: FC = () => {
-  const { postId } = Route.useParams()
+  const { postId } = Route.useParams();
+  const [reactContent, setMarkdownSource] = useRemark();
+  const { attributes, body } = matter<{ title: string; date: string }>(source);
+  useEffect(() => {
+    setMarkdownSource(body);
+  });
 
   return (
     <section>
-      <h1># {postId} Understanding Modern Software Development</h1>
-      <p>
-        Software development has evolved significantly over the past decade.
-        Modern applications leverage cloud infrastructure, microservices
-        architecture, and continuous deployment practices. Developers now focus
-        on creating scalable, maintainable code using advanced frameworks and
-        tools that promote code reusability and testing. The rise of DevOps
-        culture has bridged the gap between development and operations teams.
-      </p>
+      <h1>
+        # {postId} {attributes.title} @ {attributes.date}
+      </h1>
+      {reactContent}
     </section>
   );
 };
